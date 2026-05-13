@@ -8,15 +8,6 @@ const bookingRouter = require('./routes/booking.route')
 
 dotenv.config()
 
-// Prefer IPv4 when resolving DNS to avoid ENETUNREACH errors on hosts without IPv6
-try {
-    const dns = require('dns')
-    if (typeof dns.setDefaultResultOrder === 'function') {
-        dns.setDefaultResultOrder('ipv4first')
-    }
-} catch (e) {
-    // ignore if not supported
-}
 
 const app = express()
 

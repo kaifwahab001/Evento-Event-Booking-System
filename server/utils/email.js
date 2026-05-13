@@ -5,15 +5,14 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // use STARTTLS
+  secure: false, 
   requireTLS: true,
+  logger: true,
+  debug : true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  connectionTimeout: 10000,
-  greetingTimeout: 5000,
-  // prefer IPv4 where possible by letting Node resolve A records first (server-side)
 });
 
 // Function to send OTP (Account Verification or Event Booking)
