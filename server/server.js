@@ -10,7 +10,30 @@ dotenv.config()
 
 const app = express()
 
-app.use(cors())
+// Configure CORS to allow requests only from the client origin (strict)
+const allowedOrigin = process.env.CLIENT_URL
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!allowedOrigin) {
+            // if no CLIENT_URL is set, fall back to rejecting cross-origins
+            return callback(new Error('CLIENT_URL is not configured'))
+        }
+        if (origin === allowedOrigin) return callback(null, true)
+        return callback(new Error('Not allowed by CORS'))
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+    optionsSuccessStatus: 204,
+}
+
+app.use((req, res, next) => {
+    // explicitly handle preflight so errors are clearer
+    cors(corsOptions)(req, res, (err) => {
+        if (err) return res.status(403).json({ error: 'CORS blocked: origin not allowed' })
+        next()
+    })
+})
+
 app.use(express.json())
 
 
