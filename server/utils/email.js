@@ -1,15 +1,14 @@
 require('dotenv').config();
-const SibApiV3Sdk = require('@getbrevo/brevo');
+const Brevo = require('@getbrevo/brevo');
 
-const client = SibApiV3Sdk.ApiClient.instance;
-client.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
-const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
+const apiInstance = new Brevo.TransactionalEmailsApi();
+apiInstance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
 
 const FROM = { email: process.env.EMAIL_USER, name: 'Eventora' };
 
 exports.sendOTPEmail = async (email, otp, type) => {
   try {
-    await emailApi.sendTransacEmail({
+    await apiInstance.sendTransacEmail({
       sender: FROM,
       to: [{ email }],
       subject: type === 'account_verification'
@@ -42,7 +41,7 @@ exports.sendOTPEmail = async (email, otp, type) => {
 
 exports.sendBookingEmail = async (email, username, eventTitle) => {
   try {
-    await emailApi.sendTransacEmail({
+    await apiInstance.sendTransacEmail({
       sender: FROM,
       to: [{ email }],
       subject: 'Booking Confirmed!',
