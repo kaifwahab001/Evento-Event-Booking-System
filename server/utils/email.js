@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 // Create a transporter object using explicit Gmail SMTP settings (STARTTLS)
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
+  port: 465,
   secure: false, 
   requireTLS: true,
   family: 4,
