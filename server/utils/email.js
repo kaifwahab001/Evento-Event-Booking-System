@@ -1,13 +1,19 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-// Create a transporter object using Gmail SMTP
+// Create a transporter object using explicit Gmail SMTP settings (STARTTLS)
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // use STARTTLS
+  requireTLS: true,
   auth: {
-    user: process.env.EMAIL_USER, // Your Gmail address
-    pass: process.env.EMAIL_PASS  // Your Gmail App Password (16-digit)
-  }
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  connectionTimeout: 10000,
+  greetingTimeout: 5000,
+  // prefer IPv4 where possible by letting Node resolve A records first (server-side)
 });
 
 // Function to send OTP (Account Verification or Event Booking)
@@ -42,7 +48,9 @@ exports.sendOTPEmail = async (email, otp, type) => {
     console.log(`OTP sent successfully to ${email} for ${type}`);
   } catch (error) {
     console.error('Error sending OTP email:', error);
-    throw new Error('Failed to send OTP email');
+    // surface underlying error details for diagnostics
+    const details = error && error.code ? `${error.code} ${error.errno || ''} ${error.syscall || ''}` : ''
+    throw new Error(`Failed to send OTP email: ${details}`)
   }
 };
 
