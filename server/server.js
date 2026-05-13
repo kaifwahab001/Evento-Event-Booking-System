@@ -8,6 +8,16 @@ const bookingRouter = require('./routes/booking.route')
 
 dotenv.config()
 
+// Prefer IPv4 resolution to avoid outbound IPv6 issues on Render
+try {
+    const dns = require('dns')
+    if (typeof dns.setDefaultResultOrder === 'function') {
+        dns.setDefaultResultOrder('ipv4first')
+    }
+} catch (error) {
+    // Ignore on older Node versions
+}
+
 
 const app = express()
 
